@@ -19,3 +19,10 @@ def text_to_binary(text_file = sys.argv[2]):
 def binary_decode(bytes):
   string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
   return string_out
+
+iArr = image_accessor
+
+#flatten,add,unflatten
+iArr.reshape(-1,3)
+
+# tup = tuple(ba[i:i+3] for i in range(0,len(ba), 3))
