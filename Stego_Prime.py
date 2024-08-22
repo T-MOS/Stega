@@ -31,8 +31,15 @@ def binary_decode(binString):
   toBytes = bytes([int(binString)])
   return toBytes
 
-def pad_reshape(decimal_array):
-  
+def pad_and_reshape_text_decimals(decimal_array):
+  fit = len(decimal_array) % 3
+  rightPad = 0
+
+  if fit != 0:
+    rightPad = 3-fit
+
+  padded = np.pad(decimal_array,(0,rightPad), mode = "constant").reshape(-1,3)
+  return padded
 
 
 def arrayOps(decimal_array):
