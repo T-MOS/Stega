@@ -13,16 +13,23 @@ def image_accessor(image_path = sys.argv[1]):
 
 def text_to_binary(text_file = sys.argv[2]):
   with open(text_file, 'r') as t:
-    binary_data = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
-  return binary_data
+    # binary_str = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
+    decimalized = [byte for byte in bytearray(t, 'utf-8')]
+  # return binary_str
+  return decimalized
 
-def binary_decode(bytes):
-  string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
+def binary_decode(binString):
+  # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
+  toBytes = bytes([int(binString)])
   return string_out
 
-iArr = image_accessor
-
+iArr = image_accessor.reshape
+d
 #flatten,add,unflatten
 iArr.reshape(-1,3)
 
-# tup = tuple(ba[i:i+3] for i in range(0,len(ba), 3))
+
+# for i in range(len(flat_stacked)-41,len(flat_stacked)-41+len(decArr)):
+#   flat_stacked[i] = decArr[i % len(decArr)]
+
+# embedded = embedded.astype(np.uint8)
