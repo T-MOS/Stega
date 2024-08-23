@@ -50,10 +50,10 @@ def array_operations(shaped_array):
   return embedded
 
 
-image_array = image_accessor() #argv 1
+image_array = image_accessor() # argv 1
 decimal_shaped = text_to_dec() # argv 2
 text_embedded = array_operations(decimal_shaped)
-text_embedded.save("test/iapetus.bmp")
+text_embedded.save("test/embedded_iapetus.bmp")
 text_embedded.show()
 
 #test cmd
