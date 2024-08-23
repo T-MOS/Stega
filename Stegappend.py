@@ -2,9 +2,18 @@ import sys
 import numpy as np
 from PIL import Image
 
+# run conditions
+
+# 1) CLI encode
 if __name__ == "__main__":
   if len(sys.argv) != 3:
     sys.exit(1)
+    
+# 2) CLI decode -> arg = image
+
+# 3) module encode
+
+# 4) module decode
 
 def image_accessor(image_path = sys.argv[1]):
   openInitial = Image.open(image_path)
