@@ -63,14 +63,15 @@ def binary_decode(binString):
 if __name__ == "__main__":
   image_array = image_accessor() # argv 1
 
-  # 1) Encode -> 2 args: image/.txt
+  # 1) Encode
   if len(sys.argv) == 3:
     decimal_shaped = text_to_dec() # argv 2
     text_embedded = array_operations(decimal_shaped)
     text_embedded.save("test/embedded_iapetus.bmp")
     text_embedded.show()
-  # 2) Decode -> 1 arg: image
+  # 2) Decode
   if len(sys.argv) == 2:
     decoded = binary_decode(image_array)
   else:
-    sys.exit(1)
+    print(sys.exit(1))
+    # sys.exit(1)
