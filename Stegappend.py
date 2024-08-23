@@ -11,18 +11,10 @@ def image_accessor(image_path = sys.argv[1]):
   image_array = np.array(openInitial)
   return image_array
 
-# def text_to_binary(text_file = sys.argv[2]):
-#   with open(text_file, 'r') as t:
-#     binary_str = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
-#   return binary_str
-
-# def binary_decode(binString):
-#   string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
-#   return string_out
-
 def text_to_dec(text_file = sys.argv[2]):
   with open(text_file, 'r') as t:
-    decimalized = np.array([byte for byte in bytearray(t, 'utf-8')])
+    text = t.read()
+    decimalized = np.array([byte for byte in bytearray(text, 'utf-8')])
     decimalShaped = pad_and_reshape_text_decimals(decimalized)
   return decimalShaped
 
@@ -30,7 +22,6 @@ def binary_decode(binString):
   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
   toBytes = bytes([int(binString)])
   return toBytes
-
 
 def pad_and_reshape_text_decimals(decimal_array):
   fit = len(decimal_array) % 3
@@ -58,6 +49,12 @@ def array_operations(shaped_array):
   embedded = Image.fromarray(rebuilt)
   return embedded
 
-image_array = image_accessor()
-decimal_shaped = text_to_dec(image_array)
+
+image_array = image_accessor() #argv 1
+decimal_shaped = text_to_dec() # argv 2
 text_embedded = array_operations(decimal_shaped)
+text_embedded.save("test/iapetus.bmp")
+text_embedded.show()
+
+#test cmd
+r""" python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt """
