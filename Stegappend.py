@@ -12,8 +12,8 @@ def image_accessor(image = sys.argv[1]):
 # ENCODE
 def text_to_dec(text = sys.argv[2]):
   with open(text, 'r') as t:
-    text = t.read()
-    decimalized = np.array([byte for byte in bytearray(text, 'utf-8')])
+    te = t.read()
+    decimalized = np.array([byte for byte in bytearray(te, 'utf-8')])
     decimalShaped = pad_and_reshape_text_decimals(decimalized)
   return decimalShaped
 
@@ -46,7 +46,11 @@ def array_operations(padded_array):
 
 # DECODE 
 def decimal_accessor(image_array):
-  data_row = np.array(image_array[-1,...])
+  # grab/flatten
+  data_row = np.array(image_array[-1,...]).flatten
+  # trim padding
+  trimmed = [num for num in data_row if num > 0]
+  # characterize
   decoded_row = bytes(data_row).decode('utf-8')
 
 def decimal_decode(binString):
