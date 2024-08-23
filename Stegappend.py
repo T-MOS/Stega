@@ -6,17 +6,7 @@ r""" python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt """
 
 # run conditions
 # CLI
-if __name__ == "__main__":
-  # 1) Encode -> 2 args: image/.txt
-  if len(sys.argv) == 3:
-    # image_path = sys.argv[1]
-    # text_file = sys.argv[2]
-    pass
-  # 2) Decode -> 1 arg: image
-  if len(sys.argv) == 2:
-    pass
-  else:
-    sys.exit(1)
+
 
 # Module
 # if __name__ == "Stegappend":
@@ -63,15 +53,24 @@ def array_operations(shaped_array):
   text_embedded_image = Image.fromarray(rebuilt)
   return text_embedded_image
 
-image_array = image_accessor() # argv 1
-decimal_shaped = text_to_dec() # argv 2
-text_embedded = array_operations(decimal_shaped)
-text_embedded.save("test/embedded_iapetus.bmp")
-text_embedded.show()
-
 
 # DECODE 
 def binary_decode(binString):
   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
   toBytes = bytes([int(binString)])
   return toBytes
+
+if __name__ == "__main__":
+  image_array = image_accessor() # argv 1
+
+  # 1) Encode -> 2 args: image/.txt
+  if len(sys.argv) == 3:
+    decimal_shaped = text_to_dec() # argv 2
+    text_embedded = array_operations(decimal_shaped)
+    text_embedded.save("test/embedded_iapetus.bmp")
+    text_embedded.show()
+  # 2) Decode -> 1 arg: image
+  if len(sys.argv) == 2:
+    decoded = binary_decode(image_array)
+  else:
+    sys.exit(1)
