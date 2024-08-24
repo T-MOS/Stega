@@ -11,7 +11,7 @@ def image_accessor(image = sys.argv[1]):
 
 # ENCODE
 def text_to_dec(text = sys.argv[2]):
-  with open(text, 'r') as t:
+  with open(text, 'r',encoding="utf-8") as t:
     te = t.read()
     decimalized = np.array(bytearray(te, 'utf-8'))
     decimalShaped = pad_and_reshape_text_decimals(decimalized)
