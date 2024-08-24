@@ -45,18 +45,20 @@ def array_operations(padded_array):
 
 
 # DECODE 
-def decimal_accessor(image_array):
+def data_getter():
   # grab/flatten
-  data_row = np.array(image_array[-1,...]).flatten
+  data_row = np.array(image_array[-1,...]).flatten()
   # trim padding
   trimmed = [num for num in data_row if num > 0]
   # characterize
-  decoded_row = bytes(data_row).decode('utf-8')
+  decoded_row = bytes(trimmed).decode('utf-8')
+  return decoded_row
 
 def decimal_decode(binString):
   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
   toBytes = bytes([int(binString)])
   return toBytes
+
 
 
 # Run Conditions
