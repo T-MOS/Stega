@@ -13,7 +13,7 @@ def image_accessor(image = sys.argv[1]):
 def text_to_dec(text = sys.argv[2]):
   with open(text, 'r') as t:
     te = t.read()
-    decimalized = np.array([byte for byte in bytearray(te, 'utf-8')])
+    decimalized = np.array(bytearray(te, 'utf-8'))
     decimalShaped = pad_and_reshape_text_decimals(decimalized)
   return decimalShaped
 
