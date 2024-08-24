@@ -59,8 +59,6 @@ def decimal_decode(binString):
   toBytes = bytes([int(binString)])
   return toBytes
 
-
-
 # Run Conditions
 if __name__ == "__main__":
   image_array = image_accessor() # argv 1
