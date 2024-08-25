@@ -1,17 +1,18 @@
 import sys
 import numpy as np
+import textwrap
 from PIL import Image
 
 # python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt"
 # python .\Stegappend.py "test\output.png" 
 
-def image_accessor(image = sys.argv[1]):
+def image_accessor(image):
   openInitial = Image.open(image)
   image_array = np.array(openInitial)
   return image_array
 
 # ENCODE
-def text_to_dec(text = sys.argv[2]):
+def text_to_dec(text):
   with open(text, 'r',encoding="utf-8") as t:
     te = t.read()
     decimalized = np.array(bytearray(te, 'utf-8'))
@@ -46,7 +47,7 @@ def array_operations(padded_array):
 
 
 # DECODE 
-def data_getter():
+def data_getter(image_array):
   # grab/flatten
   data_row = np.array(image_array[-1,...]).flatten()
   # trim padding
@@ -55,6 +56,10 @@ def data_getter():
   decoded_row = bytes(trimmed).decode('utf-8')
   return decoded_row
 
+def printer(decoded_string):
+  wrapped_description = textwrap.fill(decoded_string, width=50)
+  print(f"{'*' * 50}\n{'APODescription':^50}\n{'-' * 50}\n{wrapped_description}\n{'*' * 50}")
+
 # def decimal_decode(binString):
 #   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
 #   toBytes = bytes([int(binString)])
@@ -62,15 +67,16 @@ def data_getter():
 
 # Run Conditions
 if __name__ == "__main__":
-  image_array = image_accessor() # argv 1
+  image_array = image_accessor(sys.argv[1]) # argv 1
   # 1) Encoding
   if len(sys.argv) == 3:
-    decimal_shaped = text_to_dec() # argv 2
+    decimal_shaped = text_to_dec(sys.argv[2]) # argv 2
     text_embedded = array_operations(decimal_shaped)
     text_embedded.save("test/embedded_iapetus.bmp")
     text_embedded.show()
   # 2) Decoding
   if len(sys.argv) == 2:
     decoded = data_getter(image_array)
+    printer(decoded)
   else:
     sys.exit(1)
