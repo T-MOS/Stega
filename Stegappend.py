@@ -3,9 +3,6 @@ import numpy as np
 import textwrap
 from PIL import Image
 
-# python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt"
-# python .\Stegappend.py "test\output.png" 
-
 def image_accessor(image):
   openInitial = Image.open(image)
   image_array = np.array(openInitial)
@@ -59,11 +56,6 @@ def data_getter(image_array):
 def printer(decoded_string):
   wrapped_description = textwrap.fill(decoded_string, width=50)
   print(f"{'*' * 50}\n{'APODescription':^50}\n{'-' * 50}\n{wrapped_description}\n{'*' * 50}")
-
-# def decimal_decode(binString):
-#   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
-#   toBytes = bytes([int(binString)])
-#   return toBytes
 
 # Run Conditions
 if __name__ == "__main__":
