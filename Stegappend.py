@@ -2,7 +2,8 @@ import sys
 import numpy as np
 from PIL import Image
 
-# python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt
+# python .\Stegappend.py "test\iapetus3_cassini_slim.jpg" "test\text.txt"
+# python .\Stegappend.py "test\output.png" 
 
 def image_accessor(image = sys.argv[1]):
   openInitial = Image.open(image)
@@ -54,10 +55,10 @@ def data_getter():
   decoded_row = bytes(trimmed).decode('utf-8')
   return decoded_row
 
-def decimal_decode(binString):
-  # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
-  toBytes = bytes([int(binString)])
-  return toBytes
+# def decimal_decode(binString):
+#   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
+#   toBytes = bytes([int(binString)])
+#   return toBytes
 
 # Run Conditions
 if __name__ == "__main__":
@@ -70,6 +71,6 @@ if __name__ == "__main__":
     text_embedded.show()
   # 2) Decoding
   if len(sys.argv) == 2:
-    decoded = decimal_decode(image_array)
+    decoded = data_getter(image_array)
   else:
     sys.exit(1)
