@@ -14,21 +14,13 @@ def image_accessor(image):
     image_array = np.array(openInitial)
   return image_array
 
-def text_to_binary(text_file = sys.argv[2]):
-  with open(text_file, 'r') as t:
-    binary_str = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
-  return binary_str
-
-def text_to_dec(text):
+def text_to_binary(text):
   if os.path.exists(text):
-    with open(text, 'r',encoding="utf-8") as t:
-      te = t.read()
-      decimalized = np.array(bytearray(te, 'utf-8'))
-      decimalShaped = pad_and_reshape_text_decimals(decimalized)
+    with open(text, 'r') as t:
+      binary_str = ''.join(format(chr(char),'08b') for char in bytearray(t, 'utf-8'))
   else:
-    decimalized = np.array(bytearray(text, 'utf-8'))
-    decimalShaped = pad_and_reshape_text_decimals(decimalized)
-  return decimalShaped
+    binary_str = ''.join(format(chr(char),'08b') for char in bytearray(text, 'utf-8'))
+  return binary_str
 
 def pad_and_reshape_text_decimals(decimal_array):
   fit = len(decimal_array) % 3
@@ -40,21 +32,21 @@ def pad_and_reshape_text_decimals(decimal_array):
   padded = np.pad(decimal_array,(0,rightPad), mode = "constant").reshape(-1,3)
   return padded
 
-def array_operations(padded_array):
-  row_count = (len(padded_array)//len(image_array))+1
-  cols = image_array.shape[1]
-  zerows = np.zeros((row_count,cols,3))
+# def array_operations(padded_array):
+#   row_count = (len(padded_array)//len(image_array))+1
+#   cols = image_array.shape[1]
+#   zerows = np.zeros((row_count,cols,3))
   
-  # flatten,add,rebuild
-  flat_stacked = np.vstack((image_array,zerows)).reshape(-1,3)
-  added_start = len(flat_stacked)-(row_count*cols)
-  insert_stop = added_start+len(padded_array)
-  for i in range(added_start,insert_stop):
-    flat_stacked[i] = padded_array[i % len(padded_array)]
-  rebuilt = flat_stacked.reshape(-1,cols,3).astype(np.uint8)
+#   # flatten,add,rebuild
+#   flat_stacked = np.vstack((image_array,zerows)).reshape(-1,3)
+#   added_start = len(flat_stacked)-(row_count*cols)
+#   insert_stop = added_start+len(padded_array)
+#   for i in range(added_start,insert_stop):
+#     flat_stacked[i] = padded_array[i % len(padded_array)]
+#   rebuilt = flat_stacked.reshape(-1,cols,3).astype(np.uint8)
   
-  text_embedded_image = Image.fromarray(rebuilt)
-  return text_embedded_image
+#   text_embedded_image = Image.fromarray(rebuilt)
+#   return text_embedded_image
 
 def binary_decode(binString):
   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
