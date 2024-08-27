@@ -14,10 +14,10 @@ def image_accessor(image):
     image_array = np.array(openInitial)
   return image_array
 
-# def text_to_binary(text_file = sys.argv[2]):
-#   with open(text_file, 'r') as t:
-#     binary_str = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
-#   return binary_str
+def text_to_binary(text_file = sys.argv[2]):
+  with open(text_file, 'r') as t:
+    binary_str = ''.join(format(byte,'08b') for byte in bytearray(t, 'utf-8'))
+  return binary_str
 
 def text_to_dec(text):
   if os.path.exists(text):
@@ -65,18 +65,19 @@ def binary_decode(binString):
 # decimal_shaped = text_to_dec(image_array)
 # text_embedded = array_operations(decimal_shaped)
 
-embed_index = 0
-new_image_pixels = []
-for pixel in i_array_byte:
-  if embed_index < len(initials_binary):
-    new_pixel = []
-    for channel in pixel:
-      if embed_index < len(initials_binary)
-        new_pixel.append((channel & ~1) | int(initials_binary[embed_index]))
-        embed_index += 1
-      else:
-        new_pixel.append(channel)
-      new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new image  
+def per_pixel_channel(image_array):
+  embed_index = 0
+  new_image_pixels = []
+  for pixel in i_array_byte:
+    if embed_index < len(initials_binary):
+      new_pixel = []
+      for channel in pixel:
+        if embed_index < len(initials_binary):
+          new_pixel.append((channel & ~1) | int(initials_binary[embed_index]))
+          embed_index += 1
+        else:
+          new_pixel.append(channel)
+      new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new_image  
 
     else: # no more message, add og pixel vals
       new_image_pixels.append(pixel)
