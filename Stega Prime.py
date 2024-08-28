@@ -43,6 +43,10 @@ def per_pixel_channel(image_path,binary_string):
     else: # no more text bytes, add og pixel vals
       new_image_pixels.append(pixel)
 
+  new_image = Image.new(image.mode, image.size)
+  new_image.putdata(new_image_pixels)
+  return new_image
+
 def extractor(image_path):
   image = Image.open(image_path)
   pixels = list(image.getdata())
@@ -57,5 +61,7 @@ def extractor(image_path):
     byte = binary_out[i:i+8]
     if byte == '11111110':  # End of message delimiter
         break
-    description += chr(int(byte, 2))
-  return description
+    description += byte
+
+  decoded = bytes(description).decode('utf-8')
+  return decoded
