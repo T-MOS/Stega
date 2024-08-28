@@ -1,18 +1,10 @@
-import sys, os
-import numpy as np
+import sys, os, re 
 from PIL import Image
 
-# if __name__ == "__main__":
-#   if len(sys.argv) != 3:
-#     sys.exit(1)
-
-def image_accessor(image):
-  if isinstance(image, Image.Image):
-    image_array = np.array(image)
-  else:
-    openInitial = Image.open(image)
-    image_array = np.array(openInitial)
-  return image_array
+def sanitize_filename(url_string):
+  pattern = r'([^\\/]+)\.[^.]+$' #read: "after last '/' before last '.'"
+  rinsed = re.search(pattern, url_string)
+  return rinsed.group(1)
 
 def text_to_binary(text):
   if os.path.exists(text):
@@ -22,6 +14,7 @@ def text_to_binary(text):
   else:
     binary_str = ''.join(format(ord(char),'08b') for char in text)
   return binary_str + "11111110"
+
 
 def per_pixel_channel(image_path,binary_string):
   image = Image.open(image_path)
@@ -34,8 +27,8 @@ def per_pixel_channel(image_path,binary_string):
       new_pixel = []
       for channel in pixel:
         if embed_index < len(binary_string):
-          new_pixel.append((channel & ~1) | int(binary_string[embed_index]))
-          embed_index += 1
+          new_pixel.append((channel & ~3) | int(binary_string[embed_index:embed_index+2]))
+          embed_index += 2
         else:
           new_pixel.append(channel)
       new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new_image  
@@ -45,16 +38,18 @@ def per_pixel_channel(image_path,binary_string):
 
   new_image = Image.new(image.mode, image.size)
   new_image.putdata(new_image_pixels)
+  new_image.save(sanitize_filename(sys.argv[1]) + '_stegged.png')
   return new_image
 
+
 def extractor(image_path):
-  # image = Image.open(image_path)
-  pixels = list(image_path.getdata())
+  image = Image.open(image_path)
+  pixels = list(image.getdata())
 
   binary_out = '' # LSB holder
   for pixel in pixels:
     for channel in pixel:
-      binary_out += str(channel & 1)
+      binary_out += str(channel & 3)
   
   byte_array = bytearray()
   for i in range(0, len(binary_out), 8):
@@ -67,5 +62,11 @@ def extractor(image_path):
   decoded = byte_array.decode('utf-8')
   return decoded
 
-test_image = per_pixel_channel("test/iapetus3_cassini_slim.jpg",text_to_binary('test/text.txt'))
-decoded = extractor(test_image)
+# if __name__ == "__main__":
+#   if len(sys.argv) == 3:
+#     per_pixel_channel(sys.argv[1],text_to_binary(sys.argv[2]))
+#   elif len(sys.argv) == 2:
+#     text_output = extractor(sys.argv[1])
+#     print(text_output)
+#   else:
+#     sys.exit(1)
