@@ -32,44 +32,48 @@ def pad_and_reshape_text_decimals(decimal_array):
   padded = np.pad(decimal_array,(0,rightPad), mode = "constant").reshape(-1,3)
   return padded
 
-# def array_operations(padded_array):
-#   row_count = (len(padded_array)//len(image_array))+1
-#   cols = image_array.shape[1]
-#   zerows = np.zeros((row_count,cols,3))
-  
-#   # flatten,add,rebuild
-#   flat_stacked = np.vstack((image_array,zerows)).reshape(-1,3)
-#   added_start = len(flat_stacked)-(row_count*cols)
-#   insert_stop = added_start+len(padded_array)
-#   for i in range(added_start,insert_stop):
-#     flat_stacked[i] = padded_array[i % len(padded_array)]
-#   rebuilt = flat_stacked.reshape(-1,cols,3).astype(np.uint8)
-  
-#   text_embedded_image = Image.fromarray(rebuilt)
-#   return text_embedded_image
-
 def binary_decode(binString):
   # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
   toBytes = bytes([int(binString)])
-  return toBytes
+  return toBytes + "11111110"
 
 # image_array = image_accessor()
 # decimal_shaped = text_to_dec(image_array)
 # text_embedded = array_operations(decimal_shaped)
 
-def per_pixel_channel(image_array):
+def per_pixel_channel(image_path,binary_string):
+  image = Image.open(image_path)
+  pixels = list(image.getdata())
+  
   embed_index = 0
   new_image_pixels = []
-  for pixel in i_array_byte:
-    if embed_index < len(initials_binary):
+  for pixel in pixels:
+    if embed_index < len(binary_string):
       new_pixel = []
       for channel in pixel:
-        if embed_index < len(initials_binary):
-          new_pixel.append((channel & ~1) | int(initials_binary[embed_index]))
+        if embed_index < len(binary_string):
+          new_pixel.append((channel & ~1) | int(binary_string[embed_index]))
           embed_index += 1
         else:
           new_pixel.append(channel)
       new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new_image  
 
-    else: # no more message, add og pixel vals
+    else: # no more text bytes, add og pixel vals
       new_image_pixels.append(pixel)
+
+def extractor(image_path):
+  image = Image.open(image_path)
+  pixels = list(image.getdata())
+
+  binary_out = '' # LSB holder
+  for pixel in pixels:
+    for channel in pixel:
+      binary_out += str(channel & 1)
+
+  description = ''
+  for i in range(0, len(binary_out), 8):
+    byte = binary_out[i:i+8]
+    if byte == '11111110':  # End of message delimiter
+        break
+    description += chr(int(byte, 2))
+  return description
