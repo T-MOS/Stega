@@ -16,30 +16,12 @@ def image_accessor(image):
 
 def text_to_binary(text):
   if os.path.exists(text):
-    with open(text, 'r') as t:
-      binary_str = ''.join(format(chr(char),'08b') for char in bytearray(t, 'utf-8'))
+    with open(text, 'r', encoding='utf-8') as t:
+      content = t.read()
+      binary_str = ''.join(format(ord(char),'08b') for char in content)
   else:
-    binary_str = ''.join(format(chr(char),'08b') for char in bytearray(text, 'utf-8'))
-  return binary_str
-
-def pad_and_reshape_text_decimals(decimal_array):
-  fit = len(decimal_array) % 3
-  rightPad = 0
-
-  if fit != 0:
-    rightPad = 3-fit
-
-  padded = np.pad(decimal_array,(0,rightPad), mode = "constant").reshape(-1,3)
-  return padded
-
-def binary_decode(binString):
-  # string_out = ''.join(chr(int(bytes[i:i+8],2)) for i in range(0,len(bytes),8))
-  toBytes = bytes([int(binString)])
-  return toBytes + "11111110"
-
-# image_array = image_accessor()
-# decimal_shaped = text_to_dec(image_array)
-# text_embedded = array_operations(decimal_shaped)
+    binary_str = ''.join(format(ord(char),'08b') for char in text)
+  return binary_str + "11111110"
 
 def per_pixel_channel(image_path,binary_string):
   image = Image.open(image_path)
