@@ -48,20 +48,26 @@ def per_pixel_channel(image_path,binary_string):
   return new_image
 
 def extractor(image_path):
-  image = Image.open(image_path)
-  pixels = list(image.getdata())
+  # image = Image.open(image_path)
+  pixels = list(image_path.getdata())
 
   binary_out = '' # LSB holder
   for pixel in pixels:
     for channel in pixel:
       binary_out += str(channel & 1)
-
-  description = ''
+  
+  byte_array = bytearray()
   for i in range(0, len(binary_out), 8):
     byte = binary_out[i:i+8]
     if byte == '11111110':  # End of message delimiter
-        break
-    description += byte
+      print(binary_out.index("11111110"),"stop word:", byte)
+      binary_out.index("11111110")
+      break
+    byte_array.append(int(byte,2))
+  # description = ''
 
-  decoded = bytes(description).decode('utf-8')
+  decoded = byte_array.decode('utf-8')
   return decoded
+
+test_image = per_pixel_channel("test/iapetus3_cassini_slim.jpg",text_to_binary('test/text.txt'))
+decoded = extractor(test_image)
