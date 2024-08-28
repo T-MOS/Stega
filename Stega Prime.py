@@ -18,7 +18,7 @@ def text_to_binary(text):
   if os.path.exists(text):
     with open(text, 'r', encoding='utf-8') as t:
       content = t.read()
-      binary_str = ''.join(format(ord(char),'08b') for char in content)
+      binary_str = ''.join(format(char,'08b') for char in content.encode('utf-8'))
   else:
     binary_str = ''.join(format(ord(char),'08b') for char in text)
   return binary_str + "11111110"
@@ -60,8 +60,6 @@ def extractor(image_path):
   for i in range(0, len(binary_out), 8):
     byte = binary_out[i:i+8]
     if byte == '11111110':  # End of message delimiter
-      print(binary_out.index("11111110"),"stop word:", byte)
-      binary_out.index("11111110")
       break
     byte_array.append(int(byte,2))
   # description = ''
