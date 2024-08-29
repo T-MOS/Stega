@@ -1,9 +1,9 @@
 import sys, os, re 
 from PIL import Image
 
-def sanitize_filename(url_string):
+def sanitize_filename(string):
   pattern = r'([^\\/]+)\.[^.]+$' #read: "after last '/' before last '.'"
-  rinsed = re.search(pattern, url_string)
+  rinsed = re.search(pattern, string)
   return rinsed.group(1)
 
 def text_to_binary(text):
