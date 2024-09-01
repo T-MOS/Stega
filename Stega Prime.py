@@ -19,6 +19,8 @@ def text_to_binary(text):
 def per_pixel_channel(image_path,binary_string):
   image = Image.open(image_path)
   pixels = list(image.getdata())
+  if len(binary_string) > image.width * image.height * 3 * 2:
+    raise ValueError("Binary string is too long to be embedded in this image.")
   
   embed_index = 0
   new_image_pixels = []
@@ -27,8 +29,11 @@ def per_pixel_channel(image_path,binary_string):
       new_pixel = []
       for channel in pixel:
         if embed_index < len(binary_string):
-          new_pixel.append((channel & ~3) | int(binary_string[embed_index:embed_index+2]))
-          embed_index += 2
+          cleared_channel = channel & ~3
+          embedded_bits = int(binary_string[embed_index:embed_index+2])
+          new_channel = cleared_channel | embedded_bits
+          new_pixel.append((channel & ~1) | int(binary_string[embed_index]))
+          embed_index += 1
         else:
           new_pixel.append(channel)
       new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new_image  
@@ -49,7 +54,7 @@ def extractor(image_path):
   binary_out = '' # LSB holder
   for pixel in pixels:
     for channel in pixel:
-      binary_out += str(channel & 3)
+      binary_out += str(channel & 1)
   
   byte_array = bytearray()
   for i in range(0, len(binary_out), 8):
