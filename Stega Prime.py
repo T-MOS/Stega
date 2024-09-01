@@ -62,11 +62,11 @@ def extractor(image_path):
   decoded = byte_array.decode('utf-8')
   return decoded
 
-# if __name__ == "__main__":
-#   if len(sys.argv) == 3:
-#     per_pixel_channel(sys.argv[1],text_to_binary(sys.argv[2]))
-#   elif len(sys.argv) == 2:
-#     text_output = extractor(sys.argv[1])
-#     print(text_output)
-#   else:
-#     sys.exit(1)
+if __name__ == "__main__":
+  if len(sys.argv) == 3:
+    per_pixel_channel(sys.argv[1],text_to_binary(sys.argv[2]))
+  elif len(sys.argv) == 2:
+    text_output = extractor(sys.argv[1])
+    print(text_output)
+  else:
+    sys.exit(1)
