@@ -15,6 +15,32 @@ def text_to_binary(text):
     binary_str = ''.join(format(ord(char),'08b') for char in text)
   return binary_str + "11111110"
 
+def alternate_per_channel(image_path, binary_string):
+  image = Image.open(image_path)
+  pixels = image.load()
+  
+  bits = [int(bit) for bit in binary_string]
+  bit_index = 0
+  for x in range(image.width):
+    for y in range(image.height):
+      if bit_index >= len(binary_string):
+        break
+
+      r,g,b = pixels[x,y]
+
+      if bit_index < len(binary_string):
+        # embed 2 bits in red
+        r = (r & ~3) | (bits[bit_index] << 1) | bits[bit_index +1]
+        bit_index += 2
+      if bit_index < len(binary_string):
+        # in green
+        g = (g & ~3) | (bits[bit_index] << 1) | bits[bit_index +1]
+        bit_index += 2
+      if bit_index < len(binary_string):
+        # in blue
+        b = (b & ~3) | (bits[bit_index] << 1) | bits[bit_index +1]
+        bit_index += 2
+
 
 def per_pixel_channel(image_path,binary_string):
   image = Image.open(image_path)
@@ -45,7 +71,6 @@ def per_pixel_channel(image_path,binary_string):
   new_image.putdata(new_image_pixels)
   new_image.save(sanitize_filename(sys.argv[1]) + '_stegged.png')
   return new_image
-
 
 def extractor(image_path):
   image = Image.open(image_path)
