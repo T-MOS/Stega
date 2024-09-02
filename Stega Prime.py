@@ -15,10 +15,13 @@ def text_to_binary(text):
     binary_str = ''.join(format(ord(char),'08b') for char in text)
   return binary_str + "11111110"
 
-def alternate_per_channel(image_path, binary_string):
+def two_per_channel(image_path, binary_string):
   image = Image.open(image_path)
   pixels = image.load()
   
+  if len(binary_string) > image.width*image.height * 3 * 2:
+    raise ValueError("Binary string is too long for dual LSB embed")
+
   bits = [int(bit) for bit in binary_string]
   bit_index = 0
   for x in range(image.width):
@@ -41,25 +44,26 @@ def alternate_per_channel(image_path, binary_string):
         b = (b & ~3) | (bits[bit_index] << 1) | bits[bit_index +1]
         bit_index += 2
 
+  return image
 
-def per_pixel_channel(image_path,binary_string):
+def one_per_channel(image_path,binary_string):
   image = Image.open(image_path)
   pixels = list(image.getdata())
-  if len(binary_string) > image.width * image.height * 3 * 2:
-    raise ValueError("Binary string is too long to be embedded in this image.")
+  if len(binary_string) > image.width * image.height * 3:
+    raise ValueError("Binary string is too long to be embedded in LSB.")
   
-  embed_index = 0
+  bit_index = 0
   new_image_pixels = []
   for pixel in pixels:
-    if embed_index < len(binary_string):
+    if bit_index < len(binary_string):
       new_pixel = []
       for channel in pixel:
-        if embed_index < len(binary_string):
+        if bit_index < len(binary_string):
           cleared_channel = channel & ~3
-          embedded_bits = int(binary_string[embed_index:embed_index+2])
+          embedded_bits = int(binary_string[bit_index:bit_index+2])
           new_channel = cleared_channel | embedded_bits
-          new_pixel.append((channel & ~1) | int(binary_string[embed_index]))
-          embed_index += 1
+          new_pixel.append((channel & ~1) | int(binary_string[bit_index]))
+          bit_index += 1
         else:
           new_pixel.append(channel)
       new_image_pixels.append(tuple(new_pixel)) # add full new pixel to new_image  
@@ -94,7 +98,7 @@ def extractor(image_path):
 
 if __name__ == "__main__":
   if len(sys.argv) == 3:
-    per_pixel_channel(sys.argv[1],text_to_binary(sys.argv[2]))
+    one_per_channel(sys.argv[1],text_to_binary(sys.argv[2]))
   elif len(sys.argv) == 2:
     text_output = extractor(sys.argv[1])
     print(text_output)
