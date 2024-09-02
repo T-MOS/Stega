@@ -24,8 +24,8 @@ def two_per_channel(image_path, binary_string):
 
   bits = [int(bit) for bit in binary_string]
   bit_index = 0
-  for x in range(image.width):
-    for y in range(image.height):
+  for y in range(image.height):
+    for x in range(image.width):
       if bit_index >= len(binary_string):
         break
 
@@ -43,6 +43,8 @@ def two_per_channel(image_path, binary_string):
         # in blue
         b = (b & ~3) | (bits[bit_index] << 1) | bits[bit_index +1]
         bit_index += 2
+        
+      pixels[x,y] = (r,g,b)
 
   return image
 
