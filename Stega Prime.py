@@ -80,21 +80,43 @@ def extractor(image_path):
   image = Image.open(image_path)
   pixels = list(image.getdata())
 
-  binary_out = '' # LSB holder
-  for pixel in pixels:
-    for channel in pixel:
-      binary_out += str(channel & 1)
-  
-  byte_array = bytearray()
-  for i in range(0, len(binary_out), 8):
-    byte = binary_out[i:i+8]
-    if byte == '11111110':  # End of message delimiter
-      break
-    byte_array.append(int(byte,2))
-  # description = ''
+  # LSB
+  try:  
+    binary_out = '' # LSB holder
+    for pixel in pixels:
+      for channel in pixel:
+        binary_out += str(channel & 1)
+    
+    byte_array = bytearray()
+    for i in range(0, len(binary_out), 8):
+      byte = binary_out[i:i+8]
+      if byte == '11111110':  # End of message delimiter
+        break
+      byte_array.append(int(byte,2))
 
-  decoded = byte_array.decode('utf-8')
-  return decoded
+    decoded = byte_array.decode('utf-8')
+    return decoded
+  except:
+    print("Non-LSB image")
+
+  # Double LSB
+  try:
+    binary_out = ""
+    for pixel in pixels:
+      for channel in pixel:
+        binary_out += format(channel & 3, "02b")
+
+    byte_array = bytearray()
+    for i in range(0, len(binary_out), 8):
+      byte = binary_out[i:i+8]
+      if byte == '11111110':  # End of message delimiter
+        break
+      byte_array.append(int(byte,2))
+
+    decoded = byte_array.decode('utf-8')
+    return decoded
+  except Exception as e:
+    print(f"Invalid: \n {e}")
 
 if __name__ == "__main__":
   if len(sys.argv) == 3:
